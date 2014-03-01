@@ -1,3 +1,8 @@
+# Assets Input
+input = "src/"
+# Assets Output
+output = "app/"
+
 gulp = require("gulp")
 gutil = require("gulp-util")
 imagemin = require("gulp-imagemin")
@@ -19,11 +24,11 @@ connect = require('gulp-connect')
 server = lr()
 
 gulp.task "images", ->
-  gulp.src("assets/img/**/*").pipe(imagemin(
+  gulp.src(input + "assets/img/**/*").pipe(imagemin(
     optimizationLevel: 1
     progressive: true
     interlaced: true
-  )).pipe(gulp.dest("app/assets/img")).pipe(livereload(server)).pipe notify(
+  )).pipe(gulp.dest(output + "assets/img")).pipe(livereload(server)).pipe notify(
     message: "<%= file.relative %> complete"
     title: "Images compression"
   )
@@ -38,14 +43,14 @@ gulp.task "connect", connect.server(
 
 
 gulp.task "styles", ->
-  gulp.src("assets/css/scss/screen.scss").pipe(compass(css: 'assets/css',sass: 'assets/css/scss')).pipe(autoprefixer("last 2 version", "safari 5", "ie 8", "ie 9", "opera 12.1", "ios 6", "android 4")).pipe(rename(suffix: ".min")).pipe(minifycss()).pipe(gulp.dest("app/assets/css")).pipe(livereload(server)).pipe notify(
+  gulp.src(input + "assets/css/scss/screen.scss").pipe(compass(css: input + 'assets/css',sass: input + 'assets/css/scss')).pipe(autoprefixer("last 2 version", "safari 5", "ie 8", "ie 9", "opera 12.1", "ios 6", "android 4")).pipe(rename(suffix: ".min")).pipe(minifycss()).pipe(gulp.dest(output + "/assets/css")).pipe(livereload(server)).pipe notify(
     message: "<%= file.relative %> generated"
     title: "Styles compression"
   )
 
 gulp.task "scripts", ->
-  gulp.src("assets/js/scripts/*").pipe(jshint(".jshintrc")).pipe jshint.reporter("default")
-  gulp.src("assets/js/**/*").pipe(concat("main.js")).pipe(rename(suffix: ".min")).pipe(uglify()).pipe(gulp.dest("app/assets/js")).pipe(livereload(server)).pipe notify(
+  gulp.src(input + "assets/js/scripts/*").pipe(jshint(".jshintrc")).pipe jshint.reporter("default")
+  gulp.src(input + "assets/js/**/*").pipe(concat("main.js")).pipe(rename(suffix: ".min")).pipe(uglify()).pipe(gulp.dest(output + "assets/js")).pipe(livereload(server)).pipe notify(
     message: "<%= file.relative %> generated"
     title: "Javascript task"
   )
@@ -55,9 +60,9 @@ gulp.task "html", ->
 
 gulp.task "clean", ->
   gulp.src([
-    "app/assets/css"
-    "app/assets/js"
-    "app/assets/img"
+    output + "assets/css"
+    output + "assets/js"
+    output + "assets/img"
   ],
     read: false
   ).pipe(clean()).pipe notify(
@@ -76,13 +81,13 @@ gulp.task "watch", ->
   # Watch tasks go inside inside server.listen()
 
   # Watch .scss files
-  gulp.watch "assets/css/scss/**/*.scss", ["styles"]
+  gulp.watch input + "assets/css/scss/**/*.scss", ["styles"]
 
   # Watch .js files
-  gulp.watch "assets/js/scripts/**/*.js", ["scripts"]
+  gulp.watch input + "assets/js/scripts/**/*.js", ["scripts"]
 
   # Watch image files
-  gulp.watch "assets/img/**/*", ["images"]
+  gulp.watch input + "assets/img/**/*", ["images"]
   return
 
 
